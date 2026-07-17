@@ -54,10 +54,13 @@ int MeshAddTriangle(Mesh* mesh, Vector** vertices){
 }
 
 void FreeMesh(Mesh* mesh){
+    if(mesh == NULL){
+        return;
+    }
+
     for(int i = 0; i < mesh->vertexCount; i++){
         FreeVector(mesh->vertices[i]);
     }
-    return;
 }
 
 Vector* FindMeshCenter(Mesh* mesh){

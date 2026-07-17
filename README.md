@@ -24,6 +24,7 @@ Afterwards, use the following lines in the command line as specified.
 6. `image <width, height>` to redefine the image dimensions (default at <1000, 1000>).
 7. `color <r, g, b>` to specify the default color for 'monochrome' rendering.
 8. `render <type, name>` to specify the type of render ('monochrome' or 'random') and the name (or relative location) where the render will be exported.
+9. `exit` to safely shut down CLI. 
 
 ## TODO:
 ### High Priority:

@@ -16,6 +16,7 @@ void helpCommands(){
         printf("6. image <width, height> - specifies the output image's width and height\n");
         printf("7. color <r, g, b> - specifies the default color for monochrome rendering\n");
         printf("8. render <type, name/location> - specifies the render type ('monochrome' or 'random') and the exported image's name (without file extension like .ppm)\n");
+        printf("9. exit - safely exits CLI and shuts down process\n");
 
         printf("\nCamera centered at [500,500] by default.\n");
 }
@@ -166,6 +167,13 @@ int main(){
             ImageToPPM(image, name);
 
             continue;
+        }
+
+        if(strcmp(command, "exit") == 0){
+            printf("Safe shutdown initiated...\n");
+            printf("Cleaning up mesh...\n");
+            FreeMesh(mesh);
+            return 0;
         }
 
         helpCommands();
