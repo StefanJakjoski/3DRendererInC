@@ -11,6 +11,7 @@
 #include "LinearAlgebra.h"
 #include "image.h"
 #include "mesh.h"
+#include "camera.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,5 +41,11 @@ int AddColorToAllTriangles(Image* image, Mesh* mesh);
 int AddMonochromeColorToAllTriangles(Image* image, Mesh* mesh, Color c);
 
 int DefineLightSource(Vector* source);
+
+int AddColorToSkewedTriangle(Image* image, Triangle *t, Color c);
+
+int SkewAllTrianglesAndAddColor(Image* image, Mesh* m, Camera* c);
+
+int SkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, Color c);
 
 #endif

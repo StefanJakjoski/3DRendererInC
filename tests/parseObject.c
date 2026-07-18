@@ -33,7 +33,7 @@ int main(int argc, char** argv){
     */
 
     printf("Rotating mesh...\n");
-    RotateMeshUsingAngles(mesh, 280.0, 340.0, 30.0);
+    //RotateMeshUsingAngles(mesh, 280.0, 340.0, 30.0);
 
     Vector* pushVector = CreateVector2(3);
     vSet(pushVector, 0, 500.0); 
@@ -53,11 +53,38 @@ int main(int argc, char** argv){
     MultiplyVector(light, 1.0);
     DefineLightSource(light);
 
-    Image* image = ImageCreate(1000, 1000);
-    //int check = AddColorToAllTriangles(image, mesh);
-    Color c = (Color) {0, 170, 20};
-    AddMonochromeColorToAllTriangles(image, mesh, c);
+    Camera *cam = InitializeDefaultCamera();
+    vSet(cam->position, 0, 500);
+    vSet(cam->position, 1, 500);
+    vSet(cam->position, 2, -50);
 
-    char *filenameOut = argv[2];
-    ImageToPPM(image, filenameOut);
+    for(int i = 0; i < 20; i++){
+        double zPos = vGet(cam->position, 2);
+        vSet(cam->position, 2, zPos+2);
+
+        Image* image = ImageCreate(1000, 1000);
+        //int check = AddColorToAllTriangles(image, mesh);
+        Color c = (Color) {0, 170, 20};
+        
+        //AddMonochromeColorToAllTriangles(image, mesh, c);
+        SkewAllTrianglesAndAddMonochrome(image, mesh, cam, c);
+
+        char *filenameOut = argv[2];
+        char filenameFinal[64];
+        if(i < 10)
+            sprintf(filenameFinal, "zoom/%s0%d", filenameOut, i);
+        else
+            sprintf(filenameFinal, "zoom/%s%d", filenameOut, i);
+        ImageToPPM(image, filenameFinal);
+    }
+
+    //Image* image = ImageCreate(1000, 1000);
+    ////int check = AddColorToAllTriangles(image, mesh);
+    //Color c = (Color) {0, 170, 20};
+    //
+    ////AddMonochromeColorToAllTriangles(image, mesh, c);
+    //SkewAllTrianglesAndAddMonochrome(image, mesh, cam, c);
+    //
+    //char *filenameOut = argv[2];
+    //ImageToPPM(image, filenameOut);
 }

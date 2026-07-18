@@ -34,6 +34,8 @@ int MeshAddVertex(Mesh* mesh, Vector* vertex);
 
 int MeshAddTriangle(Mesh* mesh, Vector** vertices);
 
+void FreeTriangle(Triangle* t);
+
 void FreeMesh(Mesh* mesh);
 
 Vector* FindMeshCenter(Mesh* mesh);

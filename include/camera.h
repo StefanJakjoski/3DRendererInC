@@ -4,9 +4,13 @@
 // Handles camera operations including initialization and editing
 
 #include "LinearAlgebra.h"
+#include "image.h"
+#include "mesh.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
 
 typedef struct {
     Vector* position;
@@ -15,11 +19,22 @@ typedef struct {
     Vector* up;
     Vector* forward;
 
-    float fov;
-    float near;
-    float far;
+    double fov;
+    double aspectRatio;
+    double near;
+    double far;
 } Camera;
 
 Camera* InitializeDefaultCamera();
+
+Vector* GetCameraViewOfVertex(Camera* c, Vector* v);
+
+Vector* GetPercentageOfVertexPosition(Camera* c, Vector* v);
+
+Vector* CreateImageScaledVertex(Camera* c, Image* i, Vector* v);
+
+Triangle* CreateSkewedTriangle(Image* image, Triangle* t, Camera* c);
+
+int IsVertexInView(Vector* v, Camera* c);
 
 #endif 

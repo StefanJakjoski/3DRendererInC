@@ -53,6 +53,13 @@ int MeshAddTriangle(Mesh* mesh, Vector** vertices){
     return 0;
 }
 
+void FreeTriangle(Triangle* t){
+    FreeVector(t->vertex[0]);
+    FreeVector(t->vertex[1]);
+    FreeVector(t->vertex[2]);
+    //FreeVector(&t->normal);
+}
+
 void FreeMesh(Mesh* mesh){
     if(mesh == NULL){
         return;
