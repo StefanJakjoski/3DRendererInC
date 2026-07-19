@@ -74,6 +74,31 @@ bool PointInTriangle(Vector* point, Triangle* t){
 }
 
 
+//TIME OPTIMIZED ALTERNATIVES
+double Sign2(double x1, double y1, Vector* p2, Vector* p3){
+    return (x1 - vGet(p3, 0)) * (vGet(p2, 1) - vGet(p3, 1))
+        - (vGet(p2, 0) - vGet(p3, 0)) * (y1 - vGet(p3, 1));
+}
+
+bool PointInTriangle2(double x, double y, Triangle* t){
+    double d1, d2, d3;
+    bool hasNeg, hasPos;
+
+    Vector* v1 = t->vertex[0];
+    Vector* v2 = t->vertex[1];
+    Vector* v3 = t->vertex[2];
+
+    d1 = Sign2(x, y, v1, v2);
+    d2 = Sign2(x, y, v2, v3);
+    d3 = Sign2(x, y, v3, v1);
+
+    hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(hasNeg && hasPos);
+}
+
+
 void DrawLineBetweenTwoVertices(Image* image, Vector* v1, Vector* v2){
     double x1 = vGet(v1, 0);
     double x2 = vGet(v2, 0);
@@ -352,10 +377,11 @@ int AddColorToSkewedTriangle(Image* image, Triangle *triangle, Color c){
             
             int jT = (h-1) -j;
 
-            Vector* point = CreateVector2(3);
-            vSet(point, 0, i); vSet(point, 1, j); //vSet(point, 2, z);
+            //Vector* point = CreateVector2(3);
+            //vSet(point, 0, i); vSet(point, 1, j); //vSet(point, 2, z);
 
-            bool inTriangle = PointInTriangle(point, triangle);
+            //bool inTriangle = PointInTriangle(point, triangle);
+            bool inTriangle = PointInTriangle2(i, j, triangle);
             if(inTriangle && (z < zMap[jT][i] || zMap[jT][i] == 0.0)){
                 
                 pixels[jT][i] = c;
@@ -364,7 +390,7 @@ int AddColorToSkewedTriangle(Image* image, Triangle *triangle, Color c){
 
             //zAvg += z*inTriangle;
             //zCount += (int) inTriangle;
-            FreeVector(point);
+            //FreeVector(point);
         }
     }
 
