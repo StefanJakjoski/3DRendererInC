@@ -8,15 +8,17 @@ void helpCommands(){
 
         //help
         printf("___CLI COMMANDS___\n");
-        printf("1. parse <object name/relative location - parses .obj file\n");
-        printf("2. push <x, y, z> - pushes mesh according to specified vector\n");
-        printf("3. scale <scale factor> - scales mesh by scale factor\n");
-        printf("4. rotate <x, y, z> - rotates mesh by specified degrees at the given axes\n");
-        printf("5. light <x, y, z> - specifies source of light (provide vector direction of light, not physical source)\n");
-        printf("6. image <width, height> - specifies the output image's width and height\n");
-        printf("7. color <r, g, b> - specifies the default color for monochrome rendering\n");
-        printf("8. render <type, name/location> - specifies the render type ('monochrome' or 'random') and the exported image's name (without file extension like .ppm)\n");
-        printf("9. exit - safely exits CLI and shuts down process\n");
+        printf("01. parse <object name/relative location - parses .obj file\n");
+        printf("02. push <x, y, z> - pushes mesh according to specified vector\n");
+        printf("03. scale <scale factor> - scales mesh by scale factor\n");
+        printf("04. rotate <x, y, z> - rotates mesh by specified degrees at the given axes\n");
+        printf("05. light <x, y, z> - specifies source of light (provide vector direction of light, not physical source)\n");
+        printf("06. image <width, height> - specifies the output image's width and height\n");
+        printf("07. color <r, g, b> - specifies the default color for monochrome rendering\n");
+        printf("08. render <type, name/location> - specifies the render type ('monochrome' or 'random') and the exported image's name (without file extension like .ppm)\n");
+        printf("09. camera <x, y, z> - specify coordinates of camera\n");
+        printf("10. camera_rotate <x, y, z> - rotate the camera by specified values on all axes\n");
+        printf("11. exit - safely exits CLI and shuts down process\n");
 
         printf("\nCamera centered at [500,500] by default.\n");
 }
@@ -33,6 +35,8 @@ int main(){
     DefineLightSource(light);
 
     Color defaultColor = (Color) {0,20,200};
+
+    Camera *camera = InitializeDefaultCamera();
 
     helpCommands();
 
@@ -156,15 +160,42 @@ int main(){
             image = ImageCreate(defaultWidth, defaultHeight);
 
             if(strcmp(type, "monochrome") == 0){
-                int check = AddMonochromeColorToAllTriangles(image, mesh, defaultColor);
+                //int check = AddMonochromeColorToAllTriangles(image, mesh, defaultColor);
+                ClipSkewAllTrianglesAndAddMonochrome(image, mesh, camera, defaultColor);
             }else if(strcmp(type, "random") == 0){
-                AddColorToAllTriangles(image, mesh);
+                //AddColorToAllTriangles(image, mesh);
+                ClipSkewAllTrianglesAndAddColor(image, mesh, camera);
             }else{
                 fprintf(stderr, "Specify type 'monochrome' or 'random'\n");
                 continue;
             }
 
             ImageToPPM(image, name);
+
+            continue;
+        }
+
+        if(strcmp(command, "camera") == 0){
+            double vector[3] = {0, 0, 0};
+            sscanf(buffer, "%s %lf %lf %lf", command, &vector[0], &vector[1], &vector[2]);
+            vSet(camera->position, 0, vector[0]);
+            vSet(camera->position, 1, vector[1]);
+            vSet(camera->position, 2, vector[2]);
+            
+            printf("Set camera position to:\n");
+            VectorToString(camera->position);
+            continue;
+        }
+
+        if(strcmp(command, "camera_rotate") == 0){
+            double vector[3] = {0.0, 0.0, 0.0};
+            sscanf(buffer, "%s %lf %lf %lf", command, &vector[0], &vector[1], &vector[2]);
+            
+            RotateCameraUsingAngles(camera, vector[0], vector[1], vector[2]);
+            printf("Camera rotated to:\n");
+            printf("Right: "); VectorToString(camera->right);
+            printf("Up: "); VectorToString(camera->up);
+            printf("Forward: "); VectorToString(camera->forward);
 
             continue;
         }

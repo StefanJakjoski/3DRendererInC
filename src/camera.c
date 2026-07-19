@@ -270,6 +270,55 @@ int IsVertexInView(Vector* v, Camera* c){
     return 1;
 }
 
-int ClipTriangleAgainstNearPlane(Triangle* t, double near, Triangle output[2]){
+int RotateCamera(Camera* camera, Matrix* Q){
+    if(camera == NULL || Q == NULL){
+        fprintf(stderr, "Camera: Null pointer error\n");
+        return 1;
+    }
 
+    *camera->up = *MultiplyMatrixVector2(Q, camera->up);
+    *camera->forward = *MultiplyMatrixVector2(Q, camera->forward);
+    *camera->right = *MultiplyMatrixVector2(Q, camera->right);
+
+    return 0;
+}
+
+int RotateCameraUsingAngles(Camera* c, double xTheta, double yTheta, double zTheta){
+    if(c == NULL){
+        fprintf(stderr, "Camera: Null pointer error\n");
+        return 1;
+    }
+
+    if(xTheta != 0.0){
+        Matrix *xRotation = CreateIdentityMatrix2(3);
+        double sinX = sin((PI/180.0) * xTheta); 
+        double cosX = cos((PI/180.0) * xTheta);
+        mSet(xRotation, 1, 1, cosX); mSet(xRotation, 1, 2, -1.0*sinX);
+        mSet(xRotation, 2, 1, sinX); mSet(xRotation, 2, 2, cosX);
+
+        RotateCamera(c, xRotation);
+        FreeMatrix(xRotation);
+    }
+
+    if(yTheta != 0.0){
+        Matrix *yRotation = CreateIdentityMatrix2(3);
+        double sinY = sin((PI/180.0) * yTheta); 
+        double cosY = cos((PI/180.0) * yTheta);
+        mSet(yRotation, 0, 0, cosY); mSet(yRotation, 0, 2, sinY);
+        mSet(yRotation, 2, 0, -1.0*sinY); mSet(yRotation, 2, 2, cosY);
+
+        RotateCamera(c, yRotation);
+        FreeMatrix(yRotation);
+    }
+
+    if(zTheta != 0.0){
+        Matrix *zRotation = CreateIdentityMatrix2(3);
+        double sinZ = sin((PI/180.0) * zTheta); 
+        double cosZ = cos((PI/180.0) * zTheta);
+        mSet(zRotation, 0, 0, cosZ); mSet(zRotation, 0, 1, -1.0*sinZ);
+        mSet(zRotation, 1, 0, sinZ); mSet(zRotation, 1, 1, cosZ);
+
+        RotateCamera(c, zRotation);
+        FreeMatrix(zRotation);
+    }
 }

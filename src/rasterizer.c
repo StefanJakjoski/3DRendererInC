@@ -161,24 +161,6 @@ void AddColorToTriangle(Image* image, Triangle* triangle, Color c){
     double bNormal = vGet(tNormal, 1);
     double cNormal = vGet(tNormal, 2);
 
-    //TESTING! DELETE AFTER FINISHING!
-    /*
-    VectorToString(tNormal);
-    printf("d = %f\n", dNormal);
-    printf("Plane check: %f\n",
-        aNormal*vGet(v1,0) +
-        bNormal*vGet(v1,1) +
-        cNormal*vGet(v1,2) +
-        dNormal);
-
-    double cx = (vGet(v1,0)+vGet(v2,0)+vGet(v3,0))/3.0;
-    double cy = (vGet(v1,1)+vGet(v2,1)+vGet(v3,1))/3.0;
-    double cz = (vGet(v1,2)+vGet(v2,2)+vGet(v3,2))/3.0;
-    double planeZ = -(aNormal*cx + bNormal*cy + dNormal)/cNormal;
-    printf("actual centroid z = %.10f\n", cz);
-    printf("plane centroid z = %.10f\n", planeZ);
-    */
-
     Vector* topLeft = DuplicateVector2(v1);
     Vector* bottomRight = DuplicateVector2(v1);
 
@@ -321,24 +303,6 @@ int AddColorToSkewedTriangle(Image* image, Triangle *triangle, Color c){
     double aNormal = vGet(tNormal, 0);
     double bNormal = vGet(tNormal, 1);
     double cNormal = vGet(tNormal, 2);
-
-    //TESTING! DELETE AFTER FINISHING!
-    /*
-    VectorToString(tNormal);
-    printf("d = %f\n", dNormal);
-    printf("Plane check: %f\n",
-        aNormal*vGet(v1,0) +
-        bNormal*vGet(v1,1) +
-        cNormal*vGet(v1,2) +
-        dNormal);
-
-    double cx = (vGet(v1,0)+vGet(v2,0)+vGet(v3,0))/3.0;
-    double cy = (vGet(v1,1)+vGet(v2,1)+vGet(v3,1))/3.0;
-    double cz = (vGet(v1,2)+vGet(v2,2)+vGet(v3,2))/3.0;
-    double planeZ = -(aNormal*cx + bNormal*cy + dNormal)/cNormal;
-    printf("actual centroid z = %.10f\n", cz);
-    printf("plane centroid z = %.10f\n", planeZ);
-    */
 
     Vector* topLeft = DuplicateVector2(v1);
     Vector* bottomRight = DuplicateVector2(v1);
@@ -490,12 +454,6 @@ int ClipSkewAllTrianglesAndAddColor(Image* image, Mesh* mesh, Camera* c){
             FreeTriangle(tPrime);
         }
 
-        //Triangle *tPrime = CreateSkewedTriangle(image, mesh->triangles[i], c);
-        //AddColorToSkewedTriangle(image, tPrime, col);
-        //FreeTriangle(tPrime);
-
-        //FreeTriangle(toRender[0]);
-        //FreeTriangle(toRender[1]);
     }
     printf("\nColoring complete.\n");
 
@@ -527,12 +485,8 @@ int ClipSkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, 
             Triangle *tPrime = CreateSkewedTriangle(image, toRender[i], cam);
             AddColorToSkewedTriangle(image, tPrime, cFinal);
             FreeTriangle(tPrime);
-            //FreeTriangle(toRender[i]);
         }
 
-        //Triangle *tPrime = CreateSkewedTriangle(image, mesh->triangles[i], c);
-        //AddColorToSkewedTriangle(image, tPrime, col);
-        //FreeTriangle(tPrime);
     }
     printf("\nColoring complete.\n");
 

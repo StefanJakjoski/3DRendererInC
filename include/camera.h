@@ -45,4 +45,8 @@ Triangle* CreateSkewedTriangle(Image* image, Triangle* t, Camera* c);
 
 int IsVertexInView(Vector* v, Camera* c);
 
+int RotateCamera(Camera* c, Matrix* Q);
+
+int RotateCameraUsingAngles(Camera* c, double xTheta, double yTheta, double zTheta);
+
 #endif 

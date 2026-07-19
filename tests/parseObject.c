@@ -54,13 +54,14 @@ int main(int argc, char** argv){
     DefineLightSource(light);
 
     Camera *cam = InitializeDefaultCamera();
-    vSet(cam->position, 0, 500);
-    vSet(cam->position, 1, 600);
-    vSet(cam->position, 2, -500);
+    vSet(cam->position, 0, 400);
+    vSet(cam->position, 1, 500);
+    vSet(cam->position, 2, 120);
 
-    for(int i = 0; i < 20; i++){
-        double zPos = vGet(cam->position, 2);
-        vSet(cam->position, 2, zPos+30);
+    for(int i = 0; i < 1; i++){
+        //double zPos = vGet(cam->position, 2);
+        //vSet(cam->position, 2, zPos+30);
+        //cam->fov += 0.1;
 
         Image* image = ImageCreate(1000, 1000);
         //int check = AddColorToAllTriangles(image, mesh);
