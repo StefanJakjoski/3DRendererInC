@@ -48,4 +48,8 @@ int SkewAllTrianglesAndAddColor(Image* image, Mesh* m, Camera* c);
 
 int SkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, Color c);
 
+int ClipSkewAllTrianglesAndAddColor(Image* image, Mesh* mesh, Camera* c);
+
+int ClipSkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, Color c);
+
 #endif

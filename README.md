@@ -28,7 +28,7 @@ Afterwards, use the following lines in the command line as specified.
 
 ## TODO:
 ### High Priority:
-* Implement camera functionality (positioning, perspective view, near/far thresholds) (currently hardcoded at position 500,500,0 with flat projection)
+* ~~Implement camera functionality (positioning, perspective view, near/far thresholds) (currently hardcoded at position 500,500,0 with flat projection)~~
 * Implement .png (image) parsing
 * Implement image wrapping over object
 

@@ -29,6 +29,14 @@ Camera* InitializeDefaultCamera();
 
 Vector* GetCameraViewOfVertex(Camera* c, Vector* v);
 
+Triangle* GetCameraViewOfTriangle(Camera* c, Triangle* t);
+
+Triangle** SplitTriangleInTwo(Camera* c, Vector** ins, Vector** outs);
+
+Triangle** ClipTriangleToNear(Camera* c, Vector** ins, Vector** outs);
+
+int ClipTriangleCloseToCamera(Camera* c, Triangle* t, Triangle** res);
+
 Vector* GetPercentageOfVertexPosition(Camera* c, Vector* v);
 
 Vector* CreateImageScaledVertex(Camera* c, Image* i, Vector* v);

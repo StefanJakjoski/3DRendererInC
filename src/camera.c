@@ -34,14 +34,148 @@ Vector* GetCameraViewOfVertex(Camera* c, Vector* v){
     return diff;
 }
 
-Vector* GetPercentageOfVertexPosition(Camera* c, Vector* v){
-    Vector* skewedV = GetCameraViewOfVertex(c, v);
+Triangle* GetCameraViewOfTriangle(Camera* c, Triangle* t){
+    Vector* v1Prime = GetCameraViewOfVertex(c, t->vertex[0]);
+    Vector* v2Prime = GetCameraViewOfVertex(c, t->vertex[1]);
+    Vector* v3Prime = GetCameraViewOfVertex(c, t->vertex[2]);
+    Triangle *res = (Triangle *) malloc(sizeof(Triangle));
+
+
+    res->vertex[0] = v1Prime;
+    res->vertex[1] = v2Prime;
+    res->vertex[2] = v3Prime;
+    res->normal = CalculateTriangleNormal(v1Prime, v2Prime, v3Prime);
+
+    return res;
+}
+
+//assumes always 2 in, always 1 out
+Triangle** SplitTriangleInTwo(Camera* c, Vector** ins, Vector** outs){
+    
+    //double zPrime = DotProduct2(c->forward, c->position) + c->near;
+    double zPrime = c->near;
+    Vector* out = outs[0];
+    //parameter:
+    // P(t) = A + t(B-A)
+    // t = (zPrime - zOut) / (zIn - zOut)
+
+    double zOut = vGet(out, 2);
+
+    //first vector
+    Vector *in1 = ins[0];
+    double zIn1 = vGet(in1, 2);
+    double vt1 = (zPrime - zOut) / (zIn1 - zOut);
+    Vector *P1 = SumVectors2(out, MultiplyVector2(SubtractVectors2(in1, out), vt1));
+
+    //second vector
+    Vector *in2 = ins[1];
+    double zIn2 = vGet(in2, 2);
+    double vt2 = (zPrime - zOut) / (zIn2 - zOut);
+    Vector *P2 = SumVectors2(out, MultiplyVector2(SubtractVectors2(in2, out), vt2));
+
+    Triangle *t1 = (Triangle *) malloc(sizeof(Triangle));
+    t1->vertex[0] = P1; t1->vertex[1] = in1; t1->vertex[2] = in2;
+    t1->normal = CalculateTriangleNormal(P1, in1, in2);
+
+    Triangle *t2 = (Triangle *) malloc(sizeof(Triangle));
+    t2->vertex[0] = P1; t2->vertex[1] = P2; t2->vertex[2] = in2;
+    t2->normal = CalculateTriangleNormal(P1, P2, in2);
+
+    Triangle **res = (Triangle **) malloc(2*sizeof(Triangle *));
+    res[0] = t1; res[1] = t2;
+
+    return res;
+}
+
+//assumes always 1 in, always 2 out
+Triangle** ClipTriangleToNear(Camera* c, Vector** ins, Vector** outs){
+    Vector *in = ins[0];
+    Vector *out1 = outs[0];
+    Vector *out2 = outs[1];
+
+    //double zPrime = DotProduct2(c->forward, c->position) + c->near;
+    double zPrime = c->near;
+    double zIn = vGet(in, 2);
+
+    //parameter:
+    // P(t) = A + t(B-A)
+    // t = (zPrime - zOut) / (zIn - zOut)
+
+    //first vector
+    double zOut1 = vGet(out1, 2);
+    double vt1 = (zPrime - zOut1) / (zIn - zOut1);
+    Vector *P1 = SumVectors2(out1, MultiplyVector2(SubtractVectors2(in, out1), vt1));
+
+    //second vector
+    double zOut2 = vGet(out2, 2);
+    double vt2 = (zPrime - zOut2) / (zIn - zOut2);
+    Vector *P2 = SumVectors2(out2, MultiplyVector2(SubtractVectors2(in, out2), vt2));
+
+    Triangle *t1 = (Triangle *) malloc(sizeof(Triangle));
+    t1->vertex[0] = P1; t1->vertex[1] = in; t1->vertex[2] = P2;
+    t1->normal = CalculateTriangleNormal(P1, in, P2);
+
+    Triangle **res = (Triangle **) malloc(1*sizeof(Triangle *));
+    res[0] = t1; 
+
+    return res;
+}
+
+int ClipTriangleCloseToCamera(Camera* c, Triangle* t, Triangle** res){
+    bool v1In = vGet(t->vertex[0], 2) >= c->near;
+    bool v2In = vGet(t->vertex[1], 2) >= c->near;
+    bool v3In = vGet(t->vertex[2], 2) >= c->near;
+
+    Vector** vIn = (Vector **) malloc(3 * sizeof(Vector *));
+    Vector** vOut = (Vector **) malloc(3 * sizeof(Vector *));
+    int inIt = 0;
+    int outIt = 0;
+
+    if(v1In)
+        vIn[inIt++] = t->vertex[0];
+    else
+        vOut[outIt++] = t->vertex[0];
+    
+    if(v2In)
+        vIn[inIt++] = t->vertex[1];
+    else
+        vOut[outIt++] = t->vertex[1];
+
+    if(v3In)
+        vIn[inIt++] = t->vertex[2];
+    else
+        vOut[outIt++] = t->vertex[2];
+
+    int inCount = v1In+v2In+v3In;
+    //printf("inCount: %d\n", inCount);
+    if(inCount == 3){
+        res[0] = t;
+        free(vIn); free(vOut);
+        return 1;
+    }else if(inCount == 2){
+        Triangle **resBuffer = SplitTriangleInTwo(c, vIn, vOut);
+        res[0] = resBuffer[0]; res[1] = resBuffer[1];
+        free(vIn); free(vOut); free(resBuffer);
+        return 2;
+    }else if(inCount == 1){
+        Triangle **resBuffer = ClipTriangleToNear(c, vIn, vOut);
+        res[0] = resBuffer[0];
+        free(vIn); free(vOut); free(resBuffer);
+        return 1; 
+    }
+
+    free(vIn); free(vOut);
+    return 0;
+}
+
+Vector* GetPercentageOfVertexPosition(Camera* c, Vector* skewedV){
+    //Vector* skewedV = GetCameraViewOfVertex(c, v);
 
     double x = vGet(skewedV, 0);
     double y = vGet(skewedV, 1);
     double z = vGet(skewedV, 2);
 
-    FreeVector(skewedV);
+    //FreeVector(skewedV);
 
     double angle = c->fov / 2.0;
     double tanAngle = tan(angle);
@@ -136,4 +270,6 @@ int IsVertexInView(Vector* v, Camera* c){
     return 1;
 }
 
+int ClipTriangleAgainstNearPlane(Triangle* t, double near, Triangle output[2]){
 
+}

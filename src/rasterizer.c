@@ -458,3 +458,83 @@ int SkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, Colo
     return 0;
 }
 
+
+
+// CLIPPED
+
+int ClipSkewAllTrianglesAndAddColor(Image* image, Mesh* mesh, Camera* c){
+    srand(time(NULL));
+
+    printf("Beginning coloring...\n");
+    for(int i = 0; i < mesh->triangleCount; i++){
+
+        printf("\rProgress: %d/%d", (i+1), mesh->triangleCount);
+        fflush(stdout);
+
+        Color col = (Color) {(int) (rand() * 255), (int) (rand() * 255), (int) (rand() * 255)};
+        if(lightSource != NULL)
+            col = ShadeTriangleFromDiffuseLighting(mesh->triangles[i], col);
+        
+        Triangle *t = mesh->triangles[i];
+
+        //pipeline
+        //camera view -> split at near -> skew to image -> color
+        Triangle *tCamera = GetCameraViewOfTriangle(c, t);
+
+        Triangle **toRender = (Triangle **) malloc(2*sizeof(Triangle *));
+        int trianglesToRender = ClipTriangleCloseToCamera(c, tCamera, toRender);
+        
+        for(int i = 0; i < trianglesToRender; i++){
+            Triangle *tPrime = CreateSkewedTriangle(image, toRender[i], c);
+            AddColorToSkewedTriangle(image, tPrime, col);
+            FreeTriangle(tPrime);
+        }
+
+        //Triangle *tPrime = CreateSkewedTriangle(image, mesh->triangles[i], c);
+        //AddColorToSkewedTriangle(image, tPrime, col);
+        //FreeTriangle(tPrime);
+
+        //FreeTriangle(toRender[0]);
+        //FreeTriangle(toRender[1]);
+    }
+    printf("\nColoring complete.\n");
+
+    return 0;
+}
+
+int ClipSkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, Color c){
+    srand(time(NULL));
+
+    printf("Beginning coloring...\n");
+    for(int i = 0; i < mesh->triangleCount; i++){
+        printf("\rProgress: %d/%d", (i+1), mesh->triangleCount);
+        fflush(stdout);
+
+        Color cFinal = (Color) {c.R, c.G, c.B};
+        if(lightSource != NULL)
+            cFinal = ShadeTriangleFromDiffuseLighting(mesh->triangles[i], cFinal);
+
+        Triangle *t = mesh->triangles[i];
+
+        //pipeline
+        //camera view -> split at near -> skew to image -> color
+        Triangle *tCamera = GetCameraViewOfTriangle(cam, t);
+
+        Triangle **toRender = (Triangle **) malloc(2*sizeof(Triangle *));
+        int trianglesToRender = ClipTriangleCloseToCamera(cam, tCamera, toRender);
+        
+        for(int i = 0; i < trianglesToRender; i++){
+            Triangle *tPrime = CreateSkewedTriangle(image, toRender[i], cam);
+            AddColorToSkewedTriangle(image, tPrime, cFinal);
+            FreeTriangle(tPrime);
+            //FreeTriangle(toRender[i]);
+        }
+
+        //Triangle *tPrime = CreateSkewedTriangle(image, mesh->triangles[i], c);
+        //AddColorToSkewedTriangle(image, tPrime, col);
+        //FreeTriangle(tPrime);
+    }
+    printf("\nColoring complete.\n");
+
+    return 0;
+}

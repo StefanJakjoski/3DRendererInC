@@ -33,14 +33,14 @@ int main(int argc, char** argv){
     */
 
     printf("Rotating mesh...\n");
-    //RotateMeshUsingAngles(mesh, 280.0, 340.0, 30.0);
+    RotateMeshUsingAngles(mesh, 270.0, 200.0, 0.0);
 
     Vector* pushVector = CreateVector2(3);
-    vSet(pushVector, 0, 500.0); 
+    vSet(pushVector, 0, 400.0); 
     vSet(pushVector, 1, 500.0);
-    vSet(pushVector, 2, 0.0); 
+    vSet(pushVector, 2, 200.0); 
     int moveCheck = MoveMesh(mesh, pushVector);
-    moveCheck = ScaleMesh(mesh, 25.0);
+    moveCheck = ScaleMesh(mesh, 5.0);
 
     avg = FindMeshCenter(mesh);
     printf("New Mesh Center: \n");
@@ -55,19 +55,20 @@ int main(int argc, char** argv){
 
     Camera *cam = InitializeDefaultCamera();
     vSet(cam->position, 0, 500);
-    vSet(cam->position, 1, 500);
-    vSet(cam->position, 2, -50);
+    vSet(cam->position, 1, 600);
+    vSet(cam->position, 2, -500);
 
     for(int i = 0; i < 20; i++){
         double zPos = vGet(cam->position, 2);
-        vSet(cam->position, 2, zPos+2);
+        vSet(cam->position, 2, zPos+30);
 
         Image* image = ImageCreate(1000, 1000);
         //int check = AddColorToAllTriangles(image, mesh);
         Color c = (Color) {0, 170, 20};
         
         //AddMonochromeColorToAllTriangles(image, mesh, c);
-        SkewAllTrianglesAndAddMonochrome(image, mesh, cam, c);
+        ClipSkewAllTrianglesAndAddMonochrome(image, mesh, cam, c);
+        //ClipSkewAllTrianglesAndAddColor(image, mesh, cam);
 
         char *filenameOut = argv[2];
         char filenameFinal[64];
