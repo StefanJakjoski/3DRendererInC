@@ -33,6 +33,7 @@ Afterwards, use the following lines in the command line as specified.
 * ~~Implement camera functionality (positioning, perspective view, near/far thresholds) (currently hardcoded at position 500,500,0 with flat projection)~~
 * Implement .png (image) parsing
 * Implement image wrapping over object
+* ~~Implement multithreading/parallelization~~
 
 ### Medium Priority:
 * Implement other shading options (Phong, diffusion, etc...)
@@ -43,4 +44,4 @@ Afterwards, use the following lines in the command line as specified.
 * Implement shadows onto background plane 
 
 ## Assets
-DISCLAIMER: None of the assets are mine. I got all of them off of various online platforms or wrote them up myself for the purposes of testing.
+DISCLAIMER: Almost none of the assets are mine. I got all of them off of various online platforms or wrote them up myself (Cube and Icosahedron) for the purposes of testing.

@@ -72,10 +72,16 @@ int main(int argc, char** argv){
         
         //AddMonochromeColorToAllTriangles(image, mesh, c);
         
-        clock_t start = clock();
-        ClipSkewAllTrianglesAndAddMonochrome(image, mesh, cam, c);
-        clock_t end = clock();
-        double elapsedMs = 1000.0 * (end - start) / CLOCKS_PER_SEC;
+        //clock_t start = clock();
+        ////ClipSkewAllTrianglesAndAddMonochrome(image, mesh, cam, c);
+        //MonochromeRasterParallel2(image, mesh, cam, c);
+        ////MonochromeRasterParallel(image, mesh, cam, c);
+        //clock_t end = clock();
+        //double elapsedMs = 1000.0 * (end - start) / CLOCKS_PER_SEC;
+        
+        //double elapsedMs = TimedMonochromeRasterParallel(image, mesh, cam, c);
+        double elapsedMs = TimedMonochromeRasterParallel2(image, mesh, cam, c);
+        printf("Completed rasterization in %lfms\n\n", elapsedMs);
         elapsedAvg += elapsedMs;
 
         //ClipSkewAllTrianglesAndAddColor(image, mesh, cam);

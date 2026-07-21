@@ -17,6 +17,41 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <pthread.h>
+
+typedef struct {
+    int xStart, xEnd, yStart, yEnd;
+    int tileIndexY, tileIndexX;
+    Triangle **toRender;
+    Color *colors;
+    int triangleCount;
+    int maxTriangleCount;
+} Tile;
+
+//stores single screen split
+typedef struct{
+    Image *image;
+    Tile *tiles;
+    int tileCount;
+
+    int threadID;
+    int threadCount;
+} TileThreadData;
+
+//stores multiple screen splits
+typedef struct{
+    Image *image;
+    Mesh *mesh;
+    Camera *camera;
+
+    Tile *tiles;
+
+    int startTriangle;
+    int endTriangle;
+    int tileNumY, tileNumX;
+
+    Color color;
+} GeometryThreadData;
 
 void DrawVertex(Image* image, Vector* vertex);
 
@@ -51,5 +86,13 @@ int SkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, Colo
 int ClipSkewAllTrianglesAndAddColor(Image* image, Mesh* mesh, Camera* c);
 
 int ClipSkewAllTrianglesAndAddMonochrome(Image* image, Mesh* mesh, Camera* cam, Color c);
+
+int MonochromeRasterParallel(Image* image, Mesh* mesh, Camera* cam, Color c);
+
+int MonochromeRasterParallel2(Image* image, Mesh* mesh, Camera* cam, Color c);
+
+double TimedMonochromeRasterParallel2(Image* image, Mesh* mesh, Camera* cam, Color c);
+
+double TimedMonochromeRasterParallel(Image* image, Mesh* mesh, Camera* cam, Color c);
 
 #endif

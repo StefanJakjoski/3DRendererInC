@@ -68,7 +68,7 @@ int main(int argc, char** argv){
         Color c = (Color) {0, 170, 20};
         
         //AddMonochromeColorToAllTriangles(image, mesh, c);
-        ClipSkewAllTrianglesAndAddMonochrome(image, mesh, cam, c);
+        MonochromeRasterParallel2(image, mesh, cam, c);
         //ClipSkewAllTrianglesAndAddColor(image, mesh, cam);
 
         char *filenameOut = argv[2];

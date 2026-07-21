@@ -161,7 +161,8 @@ int main(){
 
             if(strcmp(type, "monochrome") == 0){
                 //int check = AddMonochromeColorToAllTriangles(image, mesh, defaultColor);
-                ClipSkewAllTrianglesAndAddMonochrome(image, mesh, camera, defaultColor);
+                //ClipSkewAllTrianglesAndAddMonochrome(image, mesh, camera, defaultColor);
+                MonochromeRasterParallel2(image, mesh, camera, defaultColor);
             }else if(strcmp(type, "random") == 0){
                 //AddColorToAllTriangles(image, mesh);
                 ClipSkewAllTrianglesAndAddColor(image, mesh, camera);
