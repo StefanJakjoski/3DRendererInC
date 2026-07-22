@@ -40,8 +40,8 @@ Afterwards, use the following lines in the command line as specified.
 * Update CLI to match any changes
 
 ### Low Priority:
-* Implement custom backgrounds (thin grid, white or other colors, etc...)
-* Implement shadows onto background plane 
+* ~~Implement custom backgrounds (thin grid, white or other colors, etc...)~~
+* Implement shadows onto background plane
 
 ## Assets
 DISCLAIMER: Almost none of the assets are mine. I got all of them off of various online platforms or wrote them up myself (Cube and Icosahedron) for the purposes of testing.

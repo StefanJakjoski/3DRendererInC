@@ -1,3 +1,3 @@
-gcc TimeTest.c ../src/objReader.c ../src/rasterizer.c ../src/camera.c ../src/image.c ../src/mesh.c ../src/LinearAlgebra.c -lm -o test -pthread
+gcc TimeTest.c ../src/objReader.c ../src/backgroundSetup.c ../src/rasterizer.c ../src/camera.c ../src/image.c ../src/mesh.c ../src/LinearAlgebra.c -lm -o test -pthread
 ./test $1 $2
 rm test

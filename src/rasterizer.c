@@ -1,7 +1,7 @@
 #include "../include/rasterizer.h"
 
 #define VERTEX_THICKNESS 3
-#define TRIANGLES_PER_TILE 100000
+#define TRIANGLES_PER_TILE 150000
 
 Vector* lightSource = NULL;
 
@@ -99,8 +99,69 @@ bool PointInTriangle2(double x, double y, Triangle* t){
     return !(hasNeg && hasPos);
 }
 
+bool ClipTest(double p, double q, double *t0, double *t1){
+    if(p == 0.0){
+        return q >= 0.0;
+    }
+
+    double r = q / p;
+
+    if(p < 0.0){
+        // Potentially entering.
+        if(r > *t1)
+            return false;
+        if(r > *t0)
+            *t0 = r;
+    }else{
+        // Potentially leaving.
+        if(r < *t0)
+            return false;
+        if(r < *t1)
+            *t1 = r;
+    }
+
+    return true;
+}
+
+bool LiangBarskyClip(double *x0, double *y0, double *x1, double *y1,
+    double xmin, double xmax, double ymin, double ymax){
+    double dx = *x1 - *x0;
+    double dy = *y1 - *y0;
+
+    double t0 = 0.0;
+    double t1 = 1.0;
+
+    if(!ClipTest(-dx, *x0 - xmin, &t0, &t1))
+        return false;
+
+    if(!ClipTest(dx, xmax - *x0, &t0, &t1))
+        return false;
+
+    if(!ClipTest(-dy, *y0 - ymin, &t0, &t1))
+        return false;
+
+    if(!ClipTest(dy, ymax - *y0, &t0, &t1))
+        return false;
+
+    if(t1 < 1.0){
+        *x1 = *x0 + t1 * dx;
+        *y1 = *y0 + t1 * dy;
+    }
+
+    if(t0 > 0.0){
+        *x0 = *x0 + t0 * dx;
+        *y0 = *y0 + t0 * dy;
+    }
+
+    return true;
+}
+
+
 
 void DrawLineBetweenTwoVertices(Image* image, Vector* v1, Vector* v2){
+    uint16_t w = image->width;
+    uint16_t h = image->height;
+    
     double x1 = vGet(v1, 0);
     double x2 = vGet(v2, 0);
 
@@ -109,21 +170,51 @@ void DrawLineBetweenTwoVertices(Image* image, Vector* v1, Vector* v2){
         Vector* buff = v1;
         v1 = v2;
         v2 = buff;
+        x1 = vGet(v1, 0);
+        x2 = vGet(v2, 0);
     }
 
-    uint16_t w = image->width;
-    uint16_t h = image->height;
+    printf("Initial: %lf to %lf\n", x1, x2);
+
+    double y1 = vGet(v1,1);
+    double y2 = vGet(v2,1);
 
     double slope = CalculateSlopeBetweenTwoPoints(v1, v2);
 
-    int xStart = LimitValue((int) vGet(v1, 0), w);
-    int xEnd = LimitValue((int) vGet(v2, 0), w);
 
-    int yOffset = (int) vGet(v1, 1);
+    double yOffset = vGet(v1, 1) - vGet(v1, 0) * slope;
+    printf("Offset: %lf\n", yOffset);
 
+    if(!LiangBarskyClip(
+        &x1, &y1, &x2, &y2, 0.0, image->width - 1,
+        0.0, image->height - 1)){
+            return;     //line out of box
+        }
+    
+    
+
+
+    //int xStart = fmax(vGet(v1, 0), fmax( -yOffset / slope, 0.0));
+    //int xEnd = fmin(vGet(v2, 0), fmin((y2 - yOffset) / slope, w));
+    //printf("%d to %d\n", xStart, xEnd);
+    int xStart = vGet(v1, 0);
+    int xEnd = vGet(v2, 0);
+    printf("%d to %d\n", xStart, xEnd);
+    
+    //int yStart = LimitValue((int) vGet(v1, 1), h);
+    //int yEnd = LimitValue((int) vGet(v2, 1), h);
+
+    //vertical
+    if(x1 == x2){
+        for(int y = fmax(vGet(v1, 1), 0.0); y < fmin(vGet(v2, 1), h); y++){
+            image->pixels[(h -1) - y][xStart] = (Color) {255,255,255};
+        }
+
+        return;
+    }
 
     for(int x = xStart; x < xEnd; x++){
-        int y = (int) (slope*(x-xStart) + yOffset);
+        int y = (int) (slope*(x) + yOffset);
 
         bool withinX = 0 <= x && x < w;
         bool withinY = 0 <= y && y < h;

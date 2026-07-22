@@ -1,5 +1,6 @@
 #include "../include/objReader.h"
 #include "../include/rasterizer.h"
+#include "../include/backgroundSetup.h"
 
 #include <time.h>
 
@@ -56,9 +57,9 @@ int main(int argc, char** argv){
     Camera *cam = InitializeDefaultCamera();
     vSet(cam->position, 0, 400);
     vSet(cam->position, 1, 500);
-    vSet(cam->position, 2, 120);
+    vSet(cam->position, 2, 100);
 
-    int repetitions = 5;
+    int repetitions = 1;
     double elapsedAvg = 0.0;
 
     for(int i = 0; i < repetitions; i++){
@@ -67,6 +68,8 @@ int main(int argc, char** argv){
         //cam->fov += 0.1;
 
         Image* image = ImageCreate(1000, 1000);
+        ColorBackgroundGradient(image, (Color) {121, 206, 235}, (Color) {100, 100, 100});
+        AddGridlines(image, cam, 50.0);
         //int check = AddColorToAllTriangles(image, mesh);
         Color c = (Color) {0, 170, 20};
         
