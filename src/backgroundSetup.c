@@ -11,7 +11,7 @@ int ColorBackgroundGradient(Image *image, Color a, Color b){
             image->pixels[i][j] = (Color) {R, G, B};
         }
 
-        printf("%d %d %d\n", R, G, B);
+        //printf("%d %d %d\n", R, G, B);
     }
 }
 

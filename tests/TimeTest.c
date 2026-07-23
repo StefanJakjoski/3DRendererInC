@@ -59,7 +59,7 @@ int main(int argc, char** argv){
     vSet(cam->position, 1, 500);
     vSet(cam->position, 2, 100);
 
-    int repetitions = 1;
+    int repetitions = 2;
     double elapsedAvg = 0.0;
 
     for(int i = 0; i < repetitions; i++){
@@ -95,6 +95,11 @@ int main(int argc, char** argv){
             sprintf(filenameFinal, "zoom/%s0%d", filenameOut, i);
         else
             sprintf(filenameFinal, "zoom/%s%d", filenameOut, i);
+
+        
+        //AntiAliasing(image, 1.0f - ((float) i / 10.0f), 3);
+        AntiAliasing(image, 0.25, 3 + 2*i);
+
         ImageToPPM(image, filenameFinal);
     }
 

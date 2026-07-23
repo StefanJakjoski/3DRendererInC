@@ -174,7 +174,7 @@ void DrawLineBetweenTwoVertices(Image* image, Vector* v1, Vector* v2){
         x2 = vGet(v2, 0);
     }
 
-    printf("Initial: %lf to %lf\n", x1, x2);
+    //printf("Initial: %lf to %lf\n", x1, x2);
 
     double y1 = vGet(v1,1);
     double y2 = vGet(v2,1);
@@ -183,7 +183,7 @@ void DrawLineBetweenTwoVertices(Image* image, Vector* v1, Vector* v2){
 
 
     double yOffset = vGet(v1, 1) - vGet(v1, 0) * slope;
-    printf("Offset: %lf\n", yOffset);
+    //printf("Offset: %lf\n", yOffset);
 
     if(!LiangBarskyClip(
         &x1, &y1, &x2, &y2, 0.0, image->width - 1,
@@ -199,7 +199,7 @@ void DrawLineBetweenTwoVertices(Image* image, Vector* v1, Vector* v2){
     //printf("%d to %d\n", xStart, xEnd);
     int xStart = vGet(v1, 0);
     int xEnd = vGet(v2, 0);
-    printf("%d to %d\n", xStart, xEnd);
+    //printf("%d to %d\n", xStart, xEnd);
     
     //int yStart = LimitValue((int) vGet(v1, 1), h);
     //int yEnd = LimitValue((int) vGet(v2, 1), h);

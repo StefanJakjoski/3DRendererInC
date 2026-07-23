@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
+#include <math.h>
 
 typedef struct{
     uint8_t R;
@@ -33,5 +35,7 @@ int ImageFree(Image* image);
 void ZMapToString(Image* image);
 
 void ImageToPPM(Image* image, char *filename);
+
+void AntiAliasing(Image* image, float centerVal, int AAWidth);
 
 #endif
